@@ -25,13 +25,13 @@ describe('LocalSavePurchases', () => {
         //expect (cacheStore.deleteCallsCount).toBe(0)
         expect(cacheStore.messages).toEqual([])
     })
-    test('Should delete old cache on sut.save', async() => {
-        const { cacheStore, sut }  = makeSut()
-        await sut.save (mockPurchases())
-        //expect(cacheStore.deleteCallsCount).toBe(1)
-        expect (cacheStore.messages).toEqual([CacheStoreSpy.Message.delete, CacheStoreSpy.Message.insert])
-        expect(cacheStore.deleteKey).toBe('purchases')
-    })
+    // test('Should delete old cache on sut.save', async() => {
+    //     const { cacheStore, sut }  = makeSut()
+    //     await sut.save (mockPurchases())
+    //     //expect(cacheStore.deleteCallsCount).toBe(1)
+    //     expect (cacheStore.messages).toEqual([CacheStoreSpy.Message.delete, CacheStoreSpy.Message.insert])
+    //     expect(cacheStore.deleteKey).toBe('purchases')
+    // })
     test('Should not insert new Cache if delete fails', async () => {
         const { cacheStore, sut }  = makeSut()
         cacheStore.simulateDeleteError()
@@ -50,6 +50,7 @@ describe('LocalSavePurchases', () => {
         expect (cacheStore.messages).toEqual([CacheStoreSpy.Message.delete, CacheStoreSpy.Message.insert])
         expect(cacheStore.insertKey).toBe('purchases')
         expect(cacheStore.insertValues).toEqual(purchases)
+        expect(cacheStore.deleteKey).toBe('purchases')
         
     })
     test('Should throw if insert throws', async () => {
