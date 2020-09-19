@@ -1,5 +1,6 @@
 import { LocalSavePurchases } from '@/data/usecases'
 import { mockPurchases, CacheStoreSpy } from '@/data/tests'
+import { date } from 'faker'
 
 
 
@@ -8,9 +9,9 @@ type SutTypes = {
     cacheStore: CacheStoreSpy
 }
 
-const  makeSut = (): SutTypes => {
+const  makeSut = (timestamp = new Date()): SutTypes => {
     const cacheStore  = new CacheStoreSpy()
-    const sut = new LocalSavePurchases(cacheStore) 
+    const sut = new LocalSavePurchases(cacheStore, timestamp) 
 
     return{
     sut,
@@ -21,7 +22,7 @@ const  makeSut = (): SutTypes => {
 describe('LocalSavePurchases', () => {
     test('Should not delete or insert cache on sut.init', () => {
         const { cacheStore }  = makeSut()
-        new LocalSavePurchases(cacheStore)
+        //new LocalSavePurchases(cacheStore)
         //expect (cacheStore.deleteCallsCount).toBe(0)
         expect(cacheStore.messages).toEqual([])
     })
@@ -42,15 +43,19 @@ describe('LocalSavePurchases', () => {
         
     })
     test('Should insert new Cache if delete succeds', async() => {
-        const { cacheStore, sut }  = makeSut()
+        const timestamp = new Date()
+        const { cacheStore, sut }  = makeSut(timestamp)
         const purchases = mockPurchases()
         await sut.save (purchases)
         // expect(cacheStore.deleteCallsCount).toBe(1)
         // expect(cacheStore.insertCallsCount).toBe(1)
         expect (cacheStore.messages).toEqual([CacheStoreSpy.Message.delete, CacheStoreSpy.Message.insert])
-        expect(cacheStore.insertKey).toBe('purchases')
-        expect(cacheStore.insertValues).toEqual(purchases)
         expect(cacheStore.deleteKey).toBe('purchases')
+        expect(cacheStore.insertKey).toBe('purchases')
+        expect(cacheStore.insertValues).toEqual({
+            timestamp,
+            value: purchases
+        })
         
     })
     test('Should throw if insert throws', async () => {
