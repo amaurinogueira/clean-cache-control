@@ -1,6 +1,7 @@
 import { LocalSavePurchases } from '@/data/usecases'
 import { mockPurchases, CacheStoreSpy } from '@/data/tests'
 import { date } from 'faker'
+import { prototype } from 'module'
 
 
 
@@ -46,7 +47,7 @@ describe('LocalSavePurchases', () => {
         const timestamp = new Date()
         const { cacheStore, sut }  = makeSut(timestamp)
         const purchases = mockPurchases()
-        await sut.save (purchases)
+        const promise = sut.save (purchases)
         // expect(cacheStore.deleteCallsCount).toBe(1)
         // expect(cacheStore.insertCallsCount).toBe(1)
         expect (cacheStore.messages).toEqual([CacheStoreSpy.Message.delete, CacheStoreSpy.Message.insert])
@@ -56,7 +57,7 @@ describe('LocalSavePurchases', () => {
             timestamp,
             value: purchases
         })
-        
+        await expect(promise).resolves.toBeFalsy()        
     })
     test('Should throw if insert throws', async () => {
         const { cacheStore, sut }  = makeSut()
