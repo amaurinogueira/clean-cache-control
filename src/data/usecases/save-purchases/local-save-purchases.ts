@@ -1,5 +1,5 @@
 import {CacheStore} from '@/data/procotols/cache'
-import { SavePurchases } from '@/domain'
+import { SavePurchases } from '@/domain/usecases'
 
 export class LocalSavePurchases implements SavePurchases {
     constructor (private readonly cacheStore: CacheStore) {}    

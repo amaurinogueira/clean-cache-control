@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "esModuleInterop": true,
     "rootDir": "src",
     "baseUrl": "src",                       /* Base directory to resolve non-absolute module names. */
     "paths": {
