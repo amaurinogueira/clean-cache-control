@@ -1,5 +1,6 @@
 import {CacheStore} from '@/data/procotols/cache'
-import { SavePurchases } from '@/domain/usecases'
+import { SavePurchases, LoadPurchases } from '@/domain/usecases'
+
 
 export class LocalLoadPurchases implements SavePurchases {
     private readonly key = 'purchases'
@@ -21,7 +22,13 @@ export class LocalLoadPurchases implements SavePurchases {
     })
 }
 
-    async loadAll (): Promise<void> {
-        this.cacheStore.fetch(this.key)
+    async loadAll (): Promise<Array<LoadPurchases.Result>> {
+        try{
+            this.cacheStore.fetch(this.key)
+            return []
+        } catch(error){
+            this.cacheStore.delete(this.key)
+            return []
+        }      
     }
 }
