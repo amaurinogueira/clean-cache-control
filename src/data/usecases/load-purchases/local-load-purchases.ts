@@ -1,4 +1,4 @@
-import {CacheStore} from '@/data/procotols/cache'
+import {CachePolicy, CacheStore} from '@/data/procotols/cache'
 import { SavePurchases, LoadPurchases } from '@/domain/usecases'
 
 
@@ -25,9 +25,7 @@ export class LocalLoadPurchases implements SavePurchases {
     async loadAll (): Promise<Array<LoadPurchases.Result>> {
         try{
             const cache = this.cacheStore.fetch(this.key)
-            const maxAge = new Date(cache.timestamp)
-            maxAge.setDate(maxAge.getDate() + 3)
-            if (maxAge > this.currentDate) {
+            if ( CachePolicy.validate( cache.timestamp, this.currentDate)) {
                 return cache.value
             } else {
                 throw new Error() 
